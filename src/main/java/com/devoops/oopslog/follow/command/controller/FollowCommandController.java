@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/api/v1/follow")
+@RequestMapping("/api/follow")
 @RequiredArgsConstructor
 public class FollowCommandController {
 
