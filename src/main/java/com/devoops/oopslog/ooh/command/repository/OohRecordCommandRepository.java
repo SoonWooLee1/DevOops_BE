@@ -4,5 +4,5 @@ import com.devoops.oopslog.ooh.command.entity.OohRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface OohRecordRepository extends JpaRepository<OohRecord, Long> {
+public interface OohRecordCommandRepository extends JpaRepository<OohRecord, Long> {
 }
