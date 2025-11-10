@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.devoops.oopslog.tag.query.mapper.TagMapper">
+    <resultMap id="getOopsTagMap" type="com.devoops.oopslog.tag.query.dto.TagNameDTO">
+        <id property="id" column="ID"/>
+        <result property="tag_name" column="TAG_NAME"/>
+    </resultMap>
+    <select id="selectUsedOopsTagName" resultMap="getOopsTagMap" parameterType="int">
+        SELECT
+               B.ID
+             , B.TAG_NAME
+          FROM oops_tag A
+          LEFT JOIN tag B ON (A.TAG_ID = B.ID)
+         WHERE A.OOPS_ID = #{oopsId}
+    </select>
+    <resultMap id="getOohTagMap" type="com.devoops.oopslog.tag.query.dto.OohTagQueryDTO">
+        <id property="tag_id" column="TAG_ID"/>
+        <result property="ooh_id" column="OOH_ID"/>
+    </resultMap>
+    <select id="selectUsedOohTagName" resultMap="getOohTagMap" parameterType="_int">
+        SELECT
+               B.ID
+             , B.TAG_NAME
+          FROM ooh_tag A
+          LEFT JOIN tag B ON (A.TAG_ID = B.ID)
+         WHERE A.OOH_ID = #{oohId}
+    </select>
+</mapper>

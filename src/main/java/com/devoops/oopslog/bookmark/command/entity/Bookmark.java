@@ -2,8 +2,8 @@ package com.devoops.oopslog.bookmark.command.entity;
 
 import com.devoops.oopslog.member.command.entity.Member;
 
-import com.devoops.oopslog.ooh.command.entity.OohRecord;
-import com.devoops.oopslog.oops.command.entity.OopsRecord;
+import com.devoops.oopslog.ooh.command.entity.OohCommandEntity;
+import com.devoops.oopslog.oops.command.entity.OopsCommandEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "bookmark") // DDL 기반
+@Table(name = "bookmark")
 public class Bookmark {
 
     @Id
@@ -21,14 +21,14 @@ public class Bookmark {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false) // DDL 기반
+    @JoinColumn(name = "user_id", nullable = false)
     private Member user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "oops_id") // DDL 기반
-    private OopsRecord oopsRecord;
+    @JoinColumn(name = "oops_id")
+    private OopsCommandEntity oopsRecord;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ooh_id") // DDL 기반
-    private OohRecord oohRecord;
+    @JoinColumn(name = "ooh_id")
+    private OohCommandEntity oohRecord;
 }

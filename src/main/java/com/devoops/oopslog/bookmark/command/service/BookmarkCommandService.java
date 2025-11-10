@@ -6,10 +6,10 @@ import com.devoops.oopslog.bookmark.command.repository.BookmarkCommandRepository
 import com.devoops.oopslog.member.command.entity.Member;
 import com.devoops.oopslog.member.command.repository.MemberCommandRepository;
 
-import com.devoops.oopslog.ooh.command.entity.OohRecord;
-import com.devoops.oopslog.ooh.command.repository.OohRecordCommandRepository;
-import com.devoops.oopslog.oops.command.entity.OopsRecord;
-import com.devoops.oopslog.oops.command.repository.OopsRecordCommandRepository;
+import com.devoops.oopslog.ooh.command.entity.OohCommandEntity;
+import com.devoops.oopslog.ooh.command.repository.OohCommandRepository;
+import com.devoops.oopslog.oops.command.entity.OopsCommandEntity;
+import com.devoops.oopslog.oops.command.repository.OopsCommandRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,19 +19,27 @@ import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class BookmarkCommandService {
 
     // CUD용 JPA 리포지토리
     private final BookmarkCommandRepository bookmarkCommandRepository;
     // 의존하는 공통 엔티티 리포지토리
     private final MemberCommandRepository memberCommandRepository;
-    private final OohRecordCommandRepository oohRecordCommandRepository;
-    private final OopsRecordCommandRepository oopsRecordCommandRepository;
+    private final OohCommandRepository oohCommandRepository;
+    private final OopsCommandRepository oopsCommandRepository;
 
     private static final String TYPE_OOH = "ooh";
     private static final String TYPE_OOPS = "oops";
 
+    public BookmarkCommandService(BookmarkCommandRepository bookmarkCommandRepository,
+                                       MemberCommandRepository memberCommandRepository,
+                                       OohCommandRepository oohCommandRepository,
+                                       OopsCommandRepository oopsCommandRepository) {
+        this.bookmarkCommandRepository = bookmarkCommandRepository;
+        this.memberCommandRepository = memberCommandRepository;
+        this.oohCommandRepository = oohCommandRepository;
+        this.oopsCommandRepository = oopsCommandRepository;
+    }
     /**
      * 북마크 추가 C (JPA)
      */
@@ -41,39 +49,36 @@ public class BookmarkCommandService {
         Long recordId = request.getRecordId();
         String recordType = request.getRecordType();
 
-        log.info("[COMMAND] Attempting add bookmark: userId={}, type={}, recordId={}",
+        log.info("북마크 추가 시도: userId={}, type={}, recordId={}",
                 userId, recordType, recordId);
 
         Member user = memberCommandRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
+                .orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다."));
 
         Bookmark bookmark = new Bookmark();
         bookmark.setUser(user);
 
         if (TYPE_OOH.equalsIgnoreCase(recordType)) {
-            OohRecord ooh = oohRecordCommandRepository.findById(recordId)
-                    .orElseThrow(() -> new NoSuchElementException("Ooh record not found"));
+            OohCommandEntity ooh = oohCommandRepository.findById(recordId)
+                    .orElseThrow(() -> new NoSuchElementException("Ooh 게시글을 찾을 수 없습니다."));
             if (bookmarkCommandRepository.existsByUserAndOohRecord(user, ooh)) {
-                log.warn("[COMMAND] Add bookmark failed: Already bookmarked. userId={}, recordId={}", userId, recordId);
-                throw new IllegalStateException("Already bookmarked this Ooh record");
+                throw new IllegalStateException("이미 북마크한 Ooh 게시글입니다.");
             }
             bookmark.setOohRecord(ooh);
         } else if (TYPE_OOPS.equalsIgnoreCase(recordType)) {
-            OopsRecord oops = oopsRecordCommandRepository.findById(recordId)
-                    .orElseThrow(() -> new NoSuchElementException("Oops record not found"));
+            OopsCommandEntity oops = oopsCommandRepository.findById(recordId)
+                    .orElseThrow(() -> new NoSuchElementException("Oops 게시글을 찾을 수 없습니다."));
             if (bookmarkCommandRepository.existsByUserAndOopsRecord(user, oops)) {
-                log.warn("[COMMAND] Add bookmark failed: Already bookmarked. userId={}, recordId={}", userId, recordId);
-                throw new IllegalStateException("Already bookmarked this Oops record");
+                throw new IllegalStateException("이미 북마크한 Oops 게시글입니다.");
             }
             bookmark.setOopsRecord(oops);
         } else {
-            log.error("[COMMAND] Add bookmark failed: Invalid record type. type={}", recordType);
-            throw new IllegalArgumentException("Invalid record type. Must be 'ooh' or 'oops'.");
+            throw new IllegalArgumentException("유효하지 않은 레코드 타입입니다. 'ooh' 또는 'oops'여야 합니다.");
         }
 
         bookmarkCommandRepository.save(bookmark);
 
-        log.info("[COMMAND] Successfully added bookmark: userId={}, bookmarkId={}", userId, bookmark.getId());
+        log.info("북마크 추가 성공: userId={}, bookmarkId={}", userId, bookmark.getId());
     }
 
     /**
@@ -85,26 +90,25 @@ public class BookmarkCommandService {
         Long recordId = request.getRecordId();
         String recordType = request.getRecordType();
 
-        log.info("[COMMAND] Attempting remove bookmark: userId={}, type={}, recordId={}",
+        log.info("북마크 삭제 시도: userId={}, type={}, recordId={}",
                 userId, recordType, recordId);
 
         Member user = memberCommandRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
+                .orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다."));
 
         if (TYPE_OOH.equalsIgnoreCase(recordType)) {
-            OohRecord ooh = oohRecordCommandRepository.findById(recordId)
-                    .orElseThrow(() -> new NoSuchElementException("Ooh record not found"));
+            OohCommandEntity ooh = oohCommandRepository.findById(recordId)
+                    .orElseThrow(() -> new NoSuchElementException("Ooh 게시글을 찾을 수 없습니다."));
             bookmarkCommandRepository.deleteByUserAndOohRecord(user, ooh);
         } else if (TYPE_OOPS.equalsIgnoreCase(recordType)) {
-            OopsRecord oops = oopsRecordCommandRepository.findById(recordId)
-                    .orElseThrow(() -> new NoSuchElementException("Oops record not found"));
+            OopsCommandEntity oops = oopsCommandRepository.findById(recordId)
+                    .orElseThrow(() -> new NoSuchElementException("Oops 게시글을 찾을 수 없습니다."));
             bookmarkCommandRepository.deleteByUserAndOopsRecord(user, oops);
         } else {
-            log.error("[COMMAND] Remove bookmark failed: Invalid record type. type={}", recordType);
-            throw new IllegalArgumentException("Invalid record type. Must be 'ooh' or 'oops'.");
+            throw new IllegalArgumentException("유효하지 않은 레코드 타입입니다. 'ooh' 또는 'oops'여야 합니다.");
         }
 
-        log.info("[COMMAND] Successfully removed bookmark (if existed): userId={}, type={}, recordId={}",
+        log.info("북마크 삭제 성공 : userId={}, type={}, recordId={}",
                 userId, recordType, recordId);
     }
 }

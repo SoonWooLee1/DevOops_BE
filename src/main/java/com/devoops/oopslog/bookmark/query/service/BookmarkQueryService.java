@@ -21,11 +21,6 @@ public class BookmarkQueryService {
      */
     @Transactional(readOnly = true)
     public List<BookmarkItemDto> getBookmarks(Long userId) {
-        log.info("[QUERY] GetBookmarks for userId={}", userId);
-
-        List<BookmarkItemDto> list = bookmarkQueryMapper.findBookmarksByUserId(userId);
-
-        log.info("[QUERY] Found {} bookmarks for userId={}", list.size(), userId);
-        return list;
+        return bookmarkQueryMapper.findBookmarksByUserId(userId);
     }
 }

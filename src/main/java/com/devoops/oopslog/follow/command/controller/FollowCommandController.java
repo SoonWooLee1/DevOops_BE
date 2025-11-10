@@ -20,12 +20,11 @@ public class FollowCommandController {
      */
     @PostMapping
     public ResponseEntity<String> follow(
-            // @RequestHeader 삭제
             @RequestBody FollowRequestDto request) { // 1. DTO로 모든 정보를 받음
         try {
             // 2. DTO에서 followerId와 followeeId를 모두 가져와 서비스로 전달
             followCommandService.follow(request.getFollowerId(), request.getFolloweeId());
-            return ResponseEntity.ok("Follow success");
+            return ResponseEntity.ok("팔로우를 성공했습니다.");
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         } catch (IllegalStateException e) {
@@ -38,12 +37,11 @@ public class FollowCommandController {
      */
     @DeleteMapping
     public ResponseEntity<String> unfollow(
-            // @RequestHeader 삭제
             @RequestBody FollowRequestDto request) { // 1. DTO로 모든 정보를 받음
         try {
             // 2. DTO에서 followerId와 followeeId를 모두 가져와 서비스로 전달
             followCommandService.unfollow(request.getFollowerId(), request.getFolloweeId());
-            return ResponseEntity.ok("Unfollow success");
+            return ResponseEntity.ok("언팔로우를 성공했습니다.");
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
