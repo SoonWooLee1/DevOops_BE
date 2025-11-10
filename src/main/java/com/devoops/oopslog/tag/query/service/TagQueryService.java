@@ -8,4 +8,8 @@ public interface TagQueryService {
     List<TagNameDTO> getOopsTagByOopsId(int oopsId);
 
     List<TagNameDTO> getOohTagByOohId(int oohId);
+
+    List<TagNameDTO> getOopsTag();
+
+    List<TagNameDTO> getOohTag();
 }

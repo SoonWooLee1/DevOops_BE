@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class BookmarkCommandService {
 
     // CUD용 JPA 리포지토리
@@ -31,15 +32,6 @@ public class BookmarkCommandService {
     private static final String TYPE_OOH = "ooh";
     private static final String TYPE_OOPS = "oops";
 
-    public BookmarkCommandService(BookmarkCommandRepository bookmarkCommandRepository,
-                                       MemberCommandRepository memberCommandRepository,
-                                       OohCommandRepository oohCommandRepository,
-                                       OopsCommandRepository oopsCommandRepository) {
-        this.bookmarkCommandRepository = bookmarkCommandRepository;
-        this.memberCommandRepository = memberCommandRepository;
-        this.oohCommandRepository = oohCommandRepository;
-        this.oopsCommandRepository = oopsCommandRepository;
-    }
     /**
      * 북마크 추가 C (JPA)
      */

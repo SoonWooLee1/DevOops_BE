@@ -10,4 +10,8 @@ public interface TagMapper {
     List<TagNameDTO> selectUsedOopsTagName(int oopsId);
 
     List<TagNameDTO> selectUsedOohTagName(int oohId);
+
+    List<TagNameDTO> selectOopsTag();
+
+    List<TagNameDTO> selectOohTag();
 }

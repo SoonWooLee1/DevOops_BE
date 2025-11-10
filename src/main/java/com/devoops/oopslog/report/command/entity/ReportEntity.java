@@ -1,5 +1,9 @@
 package com.devoops.oopslog.report.command.entity;
 
+import com.devoops.oopslog.comments.command.entity.Comments;
+import com.devoops.oopslog.member.command.entity.Member;
+import com.devoops.oopslog.ooh.command.entity.OohCommandEntity;
+import com.devoops.oopslog.oops.command.entity.OopsCommandEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,17 +37,17 @@ public class ReportEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private MemberEntity userId;
+    private Member userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ooh_id")
-    private OohRecordEntity oohId;
+    private OohCommandEntity oohId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "oops_id")
-    private OopsRecordEntity oopsId;
+    private OopsCommandEntity oopsId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
-    private CommentsEntity commentId;
+    private Comments commentId;
 }

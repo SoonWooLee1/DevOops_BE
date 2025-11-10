@@ -32,3 +32,4 @@ public class Bookmark {
     @JoinColumn(name = "ooh_id")
     private OohCommandEntity oohRecord;
 }
+

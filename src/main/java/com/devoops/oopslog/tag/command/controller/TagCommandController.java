@@ -43,6 +43,7 @@ public class TagCommandController {
         return result;
     }
 
+    // ooh기록 삭제 시 사용된 태그도 같이 삭제되도록 요청보낼 것!
     @DeleteMapping("/oohtag-delete/{tag_id}/{ooh_id}")
     public String deleteUsedOohTag(@PathVariable Long tag_id, @PathVariable Long ooh_id){
         String result = tagCommandService.deleteUsedOohTag(tag_id, ooh_id);
@@ -50,6 +51,7 @@ public class TagCommandController {
         return result;
     }
 
+    // oops기록 삭제 시 사용된 태그도 같이 삭제되도록 요청보낼 것!
     @DeleteMapping("/oopstag-delete/{tag_id}/{oops_id}")
     public String deleteUsedOopsTag(@PathVariable Long tag_id, @PathVariable Long oops_id){
         String result = tagCommandService.deleteUsedOopsTag(tag_id, oops_id);

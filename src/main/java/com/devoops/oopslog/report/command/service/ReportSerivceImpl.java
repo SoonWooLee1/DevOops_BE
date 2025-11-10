@@ -1,8 +1,17 @@
 package com.devoops.oopslog.report.command.service;
 
+import com.devoops.oopslog.comments.command.entity.Comments;
+import com.devoops.oopslog.comments.command.repository.CommentsRepository;
+import com.devoops.oopslog.member.command.entity.Member;
+import com.devoops.oopslog.member.command.repository.MemberCommandRepository;
+import com.devoops.oopslog.ooh.command.entity.OohCommandEntity;
+import com.devoops.oopslog.ooh.command.repository.OohCommandRepository;
+import com.devoops.oopslog.oops.command.entity.OopsCommandEntity;
+import com.devoops.oopslog.oops.command.repository.OopsCommandRepository;
 import com.devoops.oopslog.report.command.dto.ReportRequestDTO;
 import com.devoops.oopslog.report.command.entity.*;
 import com.devoops.oopslog.report.command.repository.*;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,24 +23,24 @@ import java.util.Date;
 public class ReportSerivceImpl implements ReportService {
 
     private final ReportRepository reportRepository;
-    private final MemberRepository memberRepository;
+    private final MemberCommandRepository memberRepository;
     private final ReportCategoryRepository reportCategoryRepository;
-    private final OohRecordRepository oohRecordRepository;
-    private final OopsRecordRepository oopsRecordRepository;
+    private final OohCommandRepository oohCommandRepository;
+    private final OopsCommandRepository oopsCommandRepository;
     private final CommentsRepository commentsRepository;
 
     @Autowired
     public ReportSerivceImpl(ReportRepository reportRepository,
-                             MemberRepository memberRepository,
+                             MemberCommandRepository memberRepository,
                              ReportCategoryRepository reportCategoryRepository,
-                             OohRecordRepository oohRecordRepository,
-                             OopsRecordRepository oopsRecordRepository,
+                             OohCommandRepository oohCommandRepository,
+                             OopsCommandRepository oopsCommandRepository,
                              CommentsRepository commentsRepository) {
         this.reportRepository = reportRepository;
         this.memberRepository = memberRepository;
         this.reportCategoryRepository = reportCategoryRepository;
-        this.oohRecordRepository = oohRecordRepository;
-        this.oopsRecordRepository = oopsRecordRepository;
+        this.oohCommandRepository = oohCommandRepository;
+        this.oopsCommandRepository = oopsCommandRepository;
         this.commentsRepository = commentsRepository;
     }
 
@@ -39,7 +48,7 @@ public class ReportSerivceImpl implements ReportService {
     @Override
     public ReportEntity createReport(ReportRequestDTO dto) {
         // 필수 엔티티 조회
-        MemberEntity user = memberRepository.findById(dto.getUserId())
+        Member user = memberRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
 
         ReportCategoryEntity category = reportCategoryRepository.findById(dto.getCategoryId())
@@ -55,7 +64,7 @@ public class ReportSerivceImpl implements ReportService {
 
         // 선택적 신고 대상 설정 (null 가능)
         if (dto.getOohId() != null) {
-            OohRecordEntity ooh = oohRecordRepository.findById(dto.getOohId())
+            OohCommandEntity ooh = oohCommandRepository.findById(dto.getOohId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 Ooh 게시글이 존재하지 않습니다."));
             if (reportRepository.existsByOohId(ooh)) {
                 throw new IllegalStateException("이미 신고된 게시글입니다.");
@@ -64,7 +73,7 @@ public class ReportSerivceImpl implements ReportService {
         }
 
         if (dto.getOopsId() != null) {
-            OopsRecordEntity oops = oopsRecordRepository.findById(dto.getOopsId())
+            OopsCommandEntity oops = oopsCommandRepository.findById(dto.getOopsId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 Oops 게시글이 존재하지 않습니다."));
             if (reportRepository.existsByOopsId(oops)) {
                 throw new IllegalStateException("이미 신고된 게시글입니다.");
@@ -73,7 +82,7 @@ public class ReportSerivceImpl implements ReportService {
         }
 
         if (dto.getCommentId() != null) {
-            CommentsEntity comment = commentsRepository.findById(dto.getCommentId())
+            Comments comment = commentsRepository.findById(dto.getCommentId())
                     .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
             if (reportRepository.existsByCommentId(comment)) {
                 throw new IllegalStateException("이미 신고된 댓글입니다.");
@@ -101,22 +110,22 @@ public class ReportSerivceImpl implements ReportService {
         if ("Y".equals(state)) {
             // oops 게시글일 경우
             if (report.getOopsId() != null) {
-                OopsRecordEntity oops = report.getOopsId();
-                oops.setIsDeleted("Y");
-                oopsRecordRepository.save(oops);
+                OopsCommandEntity oops = report.getOopsId();
+                oops.setOopsIsDeleted("Y");
+                oopsCommandRepository.save(oops);
             }
 
             // ooh 게시글일 경우
             if (report.getOohId() != null) {
-                OohRecordEntity ooh = report.getOohId();
-                ooh.setIsDeleted("Y");
-                oohRecordRepository.save(ooh);
+                OohCommandEntity ooh = report.getOohId();
+                ooh.setOohIsDeleted("Y");
+                oohCommandRepository.save(ooh);
             }
 
             // 댓글일 경우
             if (report.getCommentId() != null) {
-                CommentsEntity comment = report.getCommentId();
-                comment.setIsDeleted("Y");
+                Comments comment = report.getCommentId();
+                comment.setIs_deleted("Y");
                 commentsRepository.save(comment);
             }
         }

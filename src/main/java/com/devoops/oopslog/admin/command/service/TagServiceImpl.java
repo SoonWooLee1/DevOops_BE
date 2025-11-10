@@ -1,7 +1,7 @@
 package com.devoops.oopslog.admin.command.service;
 
-import com.devoops.oopslog.admin.command.entity.TagEntity;
-import com.devoops.oopslog.admin.command.repository.TagRepository;
+import com.devoops.oopslog.tag.command.entity.Tag;
+import com.devoops.oopslog.tag.command.repository.TagRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public TagEntity addTag(String tagName, String tagType) {
+    public Tag addTag(String tagName, String tagType) {
 
         // tagType 검증
         if (!ALLOWED_TAG_TYPES.contains(tagType.toLowerCase())) {
@@ -41,7 +41,7 @@ public class TagServiceImpl implements TagService {
         }
 
         // 등록
-        TagEntity tag = TagEntity.builder()
+        Tag tag = Tag.builder()
                 .tagName(tagName)
                 .tagType(tagType)
                 .build();

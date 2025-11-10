@@ -4,9 +4,11 @@ import com.devoops.oopslog.likes.command.service.LikesCommandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/likes")
 public class LikesCommandController {
     private LikesCommandService likesCommandService;
 
@@ -15,7 +17,7 @@ public class LikesCommandController {
         this.likesCommandService = likesCommandService;
     }
 
-    @GetMapping("/{oops_id}/likes")
+    @GetMapping("/{oops_id}/oops-like")
     public String pushOopsLikes(@PathVariable int oops_id) {
 //                            HttpServletRequest request) {
 
@@ -28,7 +30,7 @@ public class LikesCommandController {
         return result;
     }
 
-    @GetMapping("/{ooh_id}/likes")
+    @GetMapping("/{ooh_id}/ooh-like")
     public String pushOohLikes(@PathVariable int ooh_id) {
 //                            HttpServletRequest request) {
 

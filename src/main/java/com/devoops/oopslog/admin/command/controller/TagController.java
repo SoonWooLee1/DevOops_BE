@@ -1,7 +1,6 @@
 package com.devoops.oopslog.admin.command.controller;
 
 import com.devoops.oopslog.admin.command.dto.TagRequestDTO;
-import com.devoops.oopslog.admin.command.entity.TagEntity;
 import com.devoops.oopslog.admin.command.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

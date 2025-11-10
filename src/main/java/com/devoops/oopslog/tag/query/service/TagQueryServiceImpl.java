@@ -30,4 +30,18 @@ public class TagQueryServiceImpl implements TagQueryService {
 
         return tagNameList;
     }
+
+    @Override
+    public List<TagNameDTO> getOopsTag() {
+        List<TagNameDTO> tagNameList = tagMapper.selectOopsTag();
+
+        return tagNameList;
+    }
+
+    @Override
+    public List<TagNameDTO> getOohTag() {
+        List<TagNameDTO> tagNameList = tagMapper.selectOohTag();
+
+        return tagNameList;
+    }
 }

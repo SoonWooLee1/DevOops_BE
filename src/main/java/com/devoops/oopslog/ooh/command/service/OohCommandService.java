@@ -16,6 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -117,9 +121,43 @@ public class OohCommandService {
             ooh.setOohIsPrivate(oohCommandResponseDTO.getOohIsPrivate());
             // "Y"/"N"만 오게 검증하려면 별도 Validator 사용해서 코드 수정하기
         }
+        if (oohCommandResponseDTO.getTagIds() != null && oohCommandResponseDTO.getTagIds().size() > 3) {
+            throw new IllegalArgumentException("태그는 최대 3개까지만 선택할 수 있습니다.");
+        }
 
         // 수정할 정보
         OohCommandEntity saved = oohCommandRepository.save(ooh);
+
+        // 게시글에 달린 기존 태그들
+        List<Long> originalTagIds = oohTagRepository.findTagIdsByOohId(saved.getOohId());
+
+        // 변경될 태그 목록
+        List<Long> newTagIds = oohCommandResponseDTO.getTagIds();
+
+        // 추가 및 삭제를 위해 태그 집합 비교
+        Set<Long> originalSet = new HashSet<>(originalTagIds);
+        Set<Long> newSet = new HashSet<>(newTagIds);
+
+        Set<Long> toAdd = new HashSet<>(newSet);
+        toAdd.removeAll(originalSet);
+
+        Set<Long> toDelete = new HashSet<>(originalSet);
+        toDelete.removeAll(newSet);
+
+        // 삭제
+        for(Long tagId : toDelete){
+            OohTagPK oohTagPK = new OohTagPK(tagId, saved.getOohId());
+            oohTagRepository.deleteById(oohTagPK);
+        }
+
+        // 추가
+        for(Long tagId : toAdd){
+            OohTagPK pk = new OohTagPK(tagId, saved.getOohId());
+            OohTag oohTag = new OohTag();
+            oohTag.setOohTagPK(pk);
+            oohTagRepository.save(oohTag);
+        }
+
 
 
         String name = memberCommandRepository.findById(saved.getOohUserId())

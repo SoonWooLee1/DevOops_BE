@@ -34,4 +34,18 @@ public class TagQueryController {
 
         return ResponseEntity.ok().body(tagNameList);
     }
+
+    @GetMapping("/oopstag-select")
+    public ResponseEntity<List<TagNameDTO>> oopsTagSelect() {
+        List<TagNameDTO> tagNameList = tagQueryService.getOopsTag();
+
+        return ResponseEntity.ok().body(tagNameList);
+    }
+
+    @GetMapping("/oohtag-select")
+    public ResponseEntity<List<TagNameDTO>> oohTagSelect() {
+        List<TagNameDTO> tagNameList = tagQueryService.getOohTag();
+
+        return ResponseEntity.ok().body(tagNameList);
+    }
 }

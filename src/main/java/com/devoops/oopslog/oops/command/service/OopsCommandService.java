@@ -18,6 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -129,18 +133,35 @@ public class OopsCommandService {
         // 수정할 정보
         OopsCommandEntity saved = oopsCommandRepository.save(oops);
 
-        if (oopsCommandResponseDTO.getTagIds() != null && !oopsCommandResponseDTO.getTagIds().isEmpty()) {
-            for (Long tagId : oopsCommandResponseDTO.getTagIds()) {
 
-                // 복합키 생성
-                OopsTagPK oopsTagPK = new OopsTagPK(tagId, saved.getOopsId());
+        // 게시글에 달린 기존 태그들
+        List<Long> originalTagIds = oopsTagRepository.findTagIdsByOopsId(saved.getOopsId());
 
-                // 관계 엔티티 생성 및 저장
-                OopsTag oopsTag = new OopsTag();
-                oopsTag.setOopsTagPK(oopsTagPK);
+        // 변경될 태그 목록
+        List<Long> newTagIds = oopsCommandResponseDTO.getTagIds();
 
-                oopsTagRepository.save(oopsTag);
-            }
+        // 추가 및 삭제를 위해 태그 집합 비교
+        Set<Long> originalSet = new HashSet<>(originalTagIds);
+        Set<Long> newSet = new HashSet<>(newTagIds);
+
+        Set<Long> toAdd = new HashSet<>(newSet);
+        toAdd.removeAll(originalSet);
+
+        Set<Long> toDelete = new HashSet<>(originalSet);
+        toDelete.removeAll(newSet);
+
+        // 삭제
+        for(Long tagId : toDelete){
+            OopsTagPK oopsTagPK = new OopsTagPK(tagId, saved.getOopsId());
+            oopsTagRepository.deleteById(oopsTagPK);
+        }
+
+        // 추가
+        for(Long tagId : toAdd){
+            OopsTagPK pk = new OopsTagPK(tagId, saved.getOopsId());
+            OopsTag oopsTag = new OopsTag();
+            oopsTag.setOopsTagPK(pk);
+            oopsTagRepository.save(oopsTag);
         }
 
 

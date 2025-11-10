@@ -10,6 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
+@Builder
 public class Tag {
 
     @Id
@@ -18,8 +19,9 @@ public class Tag {
     private Long id;
 
     @Column(name = "tag_name")
-    private String tag_name;
+    private String tagName;
 
     @Column(name = "tag_type")
-    private String tag_type;
+    private String tagType;
+
 }

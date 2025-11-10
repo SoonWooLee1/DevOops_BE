@@ -100,11 +100,11 @@ public class TagCommandServiceImpl implements TagCommandService {
     @Transactional
     public String modifyTagById(Long tagId, TagCommandDTO tagDTO) {
         Tag tag = tagRepository.findById(tagId).get();
-        if(tagDTO.getTag_name() != null && !tag.getTag_name().equals(tagDTO.getTag_name())) {
-            tag.setTag_name(tagDTO.getTag_name());
+        if(tagDTO.getTag_name() != null && !tag.getTagName().equals(tagDTO.getTag_name())) {
+            tag.setTagName(tagDTO.getTag_name());
         }
-        if(tagDTO.getTag_type() != null && !tag.getTag_type().equals(tagDTO.getTag_type())) {
-            tag.setTag_type(tagDTO.getTag_type());
+        if(tagDTO.getTag_type() != null && !tag.getTagType().equals(tagDTO.getTag_type())) {
+            tag.setTagType(tagDTO.getTag_type());
         }
 
         tagRepository.save(tag);

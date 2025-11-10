@@ -1,8 +1,8 @@
 package com.devoops.oopslog.admin.command.service;
 
-import com.devoops.oopslog.admin.command.entity.TagEntity;
+import com.devoops.oopslog.tag.command.entity.Tag;
 
 public interface TagService {
-    TagEntity addTag(String tagName, String tagType);
+    Tag addTag(String tagName, String tagType);
     void deleteTag(Long tagId);
 }

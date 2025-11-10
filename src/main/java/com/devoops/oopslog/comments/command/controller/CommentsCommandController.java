@@ -2,7 +2,10 @@ package com.devoops.oopslog.comments.command.controller;
 
 import com.devoops.oopslog.comments.command.dto.CommentCommandDTO;
 import com.devoops.oopslog.comments.command.service.CommentsCommandService;
+import com.devoops.oopslog.member.command.dto.UserImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,10 +33,15 @@ public class CommentsCommandController {
     @PostMapping("/ooh-insert/{ooh_id}")
     public String writeCommentAtOoh(@RequestBody CommentCommandDTO newComment,
                                      @PathVariable int ooh_id){
-//                                     , HttpServletRequest request) {
-//        UserInfo userInfo = (UserInfo) request.getAttribute("userInfo");
-//        long userId = userInfo.getId();
-        long userId = 20;   // 임시값 지정
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!(authentication.getPrincipal() instanceof UserImpl)){
+            throw new RuntimeException("잘못된 id");
+        }
+        UserImpl userImpl = (UserImpl)authentication.getPrincipal();
+
+
+        long userId = userImpl.getId();   // 임시값 지정
         String result = commentsCommandService.registOohComment(newComment, ooh_id, userId);
 
         return result;
@@ -42,11 +50,14 @@ public class CommentsCommandController {
     @PostMapping("/notice-insert/{notice_id}")
     public String writeCommentAtNotice(@RequestBody CommentCommandDTO newComment,
                                      @PathVariable int notice_id){
-//                                     , HttpServletRequest request) {
-//        UserInfo userInfo = (UserInfo) request.getAttribute("userInfo");
-//        long userId = userInfo.getId();
-        long userId = 1;   // 임시값 지정
-        String result = commentsCommandService.registNoticeComment(newComment, notice_id, userId);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!(authentication.getPrincipal() instanceof UserImpl)){
+            throw new RuntimeException("잘못된 id");
+        }
+        UserImpl userImpl = (UserImpl)authentication.getPrincipal();
+
+        String result = commentsCommandService.registNoticeComment(newComment, notice_id, userImpl.getId());
 
         return result;
     }
