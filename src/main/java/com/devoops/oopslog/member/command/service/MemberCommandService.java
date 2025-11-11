@@ -16,4 +16,6 @@ public interface MemberCommandService extends UserDetailsService {
     void saveLoginHistory(Long id, String ipAddress, Character isSucceed);
 
     void modifyMemberInfo(ModifyDTO modifyDTO);
+
+    void stopMember(Long id);
 }

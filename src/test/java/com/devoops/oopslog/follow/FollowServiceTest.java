@@ -46,6 +46,9 @@ public class FollowServiceTest {
 
     @BeforeEach
     void setUp() {
+        // 테스트 격리를 위해 매번 follow 테이블을 비움
+        followCommandRepository.deleteAllInBatch();
+
         // CUD 테스트를 위한 기본 데이터 생성 (ID 1, 2, 3가 이미 존재한다고 가정)
         testUser1 = memberCommandRepository.findById(1L).orElse(null);
         testUser2 = memberCommandRepository.findById(2L).orElse(null);
@@ -74,8 +77,7 @@ public class FollowServiceTest {
             testUser3 = memberCommandRepository.save(testUser3);
         }
 
-        // '언팔로우' 및 '목록 조회' 테스트를 위한 사전 데이터
-        // given: 유저 2가 유저 3을 미리 팔로우
+        // '언팔로우' 및 '목록 조회' 테스트를 위한 사전 데이터 1개 추가
         Follow existingFollow = new Follow(testUser2, testUser3);
         followCommandRepository.save(existingFollow);
     }
@@ -89,7 +91,9 @@ public class FollowServiceTest {
         long followerId = testUser1.getId();
         long followeeId = testUser2.getId();
 
+        // (setUp에서 1건만 save 했으므로 countBefore는 1이 되어야 함)
         long countBefore = followCommandRepository.count();
+        assertThat(countBefore).isEqualTo(1);
 
         // when
         Assertions.assertDoesNotThrow(
@@ -98,7 +102,7 @@ public class FollowServiceTest {
 
         // then
         long countAfter = followCommandRepository.count();
-        assertThat(countAfter).isEqualTo(countBefore + 1);
+        assertThat(countAfter).isEqualTo(2); // (1 + 1 = 2)
         boolean isFollowing = followCommandRepository.existsByFollowerAndFollowee(testUser1, testUser2);
         Assertions.assertTrue(isFollowing);
     }
@@ -106,7 +110,7 @@ public class FollowServiceTest {
     @Test
     @DisplayName("[C] 이미 팔로우 중인 유저를 팔로우할 때 예외 발생 테스트")
     void testFollowAlreadyExistsFailure() {
-        // given: 유저 2가 유저 3을 (이미) 팔로우
+        // given: 유저 2가 유저 3을 (이미) 팔로우 (setUp에서 완료)
         long followerId = testUser2.getId();
         long followeeId = testUser3.getId();
 
@@ -123,7 +127,9 @@ public class FollowServiceTest {
         long followerId = testUser2.getId();
         long followeeId = testUser3.getId();
 
+        // (setUp에서 1건만 save 했으므로 countBefore는 1이 되어야 함)
         long countBefore = followCommandRepository.count();
+        assertThat(countBefore).isEqualTo(1);
 
         // when
         Assertions.assertDoesNotThrow(
@@ -132,7 +138,11 @@ public class FollowServiceTest {
 
         // then
         long countAfter = followCommandRepository.count();
+        assertThat(countAfter).isEqualTo(0); // (1 - 1 = 0)
+
+        // 기존 검증 로직도 통과
         assertThat(countAfter).isEqualTo(countBefore - 1);
+
         boolean isFollowing = followCommandRepository.existsByFollowerAndFollowee(testUser2, testUser3);
         Assertions.assertFalse(isFollowing);
     }
@@ -155,7 +165,7 @@ public class FollowServiceTest {
     @Test
     @DisplayName("[R] 특정 유저의 팔로잉(following) 목록 조회 테스트")
     void testGetFollowingList() {
-        // given: 유저 2는 유저 3을 팔로우 중 (Setup에서 완료)
+        // given: 유저 2는 유저 3을 팔로우 중 (Setup에서 1건만 완료)
 
         // when
         List<FollowerResponseDto> followingList = Assertions.assertDoesNotThrow(
@@ -164,14 +174,14 @@ public class FollowServiceTest {
 
         // then
         Assertions.assertNotNull(followingList);
-        assertThat(followingList.size()).isEqualTo(1);
+        assertThat(followingList.size()).isEqualTo(1); // (이제 정확히 1건만 조회됨)
         Assertions.assertEquals(testUser3.getName(), followingList.get(0).getName());
     }
 
     @Test
     @DisplayName("[R] 특정 유저의 팔로워(follower) 목록 조회 테스트")
     void testGetFollowerList() {
-        // given: 유저 3은 유저 2에게 팔로우당하는 중 (Setup에서 완료)
+        // given: 유저 3은 유저 2에게 팔로우당하는 중 (Setup에서 1건만 완료)
 
         // when
         List<FollowerResponseDto> followerList = Assertions.assertDoesNotThrow(
@@ -180,7 +190,7 @@ public class FollowServiceTest {
 
         // then
         Assertions.assertNotNull(followerList);
-        assertThat(followerList.size()).isEqualTo(1);
+        assertThat(followerList.size()).isEqualTo(1); // (이제 정확히 1건만 조회됨)
         Assertions.assertEquals(testUser2.getName(), followerList.get(0).getName());
     }
 }

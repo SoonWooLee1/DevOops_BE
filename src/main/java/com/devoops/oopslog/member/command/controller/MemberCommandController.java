@@ -56,5 +56,10 @@ public class MemberCommandController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/stop/{id}")
+    public ResponseEntity<?> stopMember(@PathVariable Long id){
+        memberCommandService.stopMember(id);
+        return ResponseEntity.ok().build();
+    }
 
 }

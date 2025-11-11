@@ -58,6 +58,10 @@ public class BookmarkServiceTest {
 
     @BeforeEach
     void setUp() {
+
+        // 테스트 격리를 위해 매번 bookmark 테이블을 깨끗하게 비움
+        bookmarkCommandRepository.deleteAllInBatch();
+
         // CUD 테스트를 위한 기본 데이터 생성 (ID 1, 2가 이미 존재한다고 가정)
         testUser1 = memberCommandRepository.findById(1L).orElse(null);
         testUser2 = memberCommandRepository.findById(2L).orElse(null);
@@ -69,21 +73,21 @@ public class BookmarkServiceTest {
             testUser1 = new Member();
             testUser1.setMemberId("testUser1");
             testUser1.setMemberPw("password");
-            testUser1.setName("테스트유저1");
+            testUser1.setName("테스트유저1"); // "관리자"
             testUser1 = memberCommandRepository.save(testUser1);
         }
         if (testUser2 == null) {
             testUser2 = new Member();
             testUser2.setMemberId("testUser2");
             testUser2.setMemberPw("password");
-            testUser2.setName("테스트유저2");
+            testUser2.setName("테스트유저2"); // "김개발"
             testUser2 = memberCommandRepository.save(testUser2);
         }
         if (testOoh1 == null) {
             testOoh1 = new OohCommandEntity();
             testOoh1.setOohTitle("Ooh 테스트 제목");
             testOoh1.setOohContent("Ooh 테스트 내용");
-            testOoh1.setOohUserId(testUser1.getId()); // 작성자
+            testOoh1.setOohUserId(testUser2.getId()); // 작성자
             testOoh1 = oohCommandRepository.save(testOoh1);
         }
         if (testOops1 == null) {
@@ -227,11 +231,14 @@ public class BookmarkServiceTest {
         // Mapper 쿼리 정렬(bookmarkId DESC)에 따라 b2(Oops)가 먼저 나와야 함
         Assertions.assertEquals("oops", bookmarks.get(0).getRecordType());
         Assertions.assertEquals(testOops1.getOopsId(), bookmarks.get(0).getRecordId());
-        Assertions.assertEquals(testUser2.getName(), bookmarks.get(0).getAuthorName()); // Oops1 작성자
+        Assertions.assertEquals(testUser2.getName(), bookmarks.get(0).getAuthorName()); // Oops1 작성자 ("김개발")
 
+        // b1 (Ooh)이 나중에 나와야 함
         Assertions.assertEquals("ooh", bookmarks.get(1).getRecordType());
         Assertions.assertEquals(testOoh1.getOohId(), bookmarks.get(1).getRecordId());
-        Assertions.assertEquals(testUser1.getName(), bookmarks.get(1).getAuthorName()); // Ooh1 작성자
+
+        // Ooh1의 작성자가 DB에 "김개발"(testUser2)로 되어 있으므로 "관리자"(testUser1) 대신 testUser2.getName()을 기대
+        Assertions.assertEquals(testUser2.getName(), bookmarks.get(1).getAuthorName());
     }
 
     @Test

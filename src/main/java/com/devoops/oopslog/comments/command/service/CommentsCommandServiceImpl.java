@@ -4,6 +4,7 @@ import com.devoops.oopslog.comments.command.dto.CommentCommandDTO;
 import com.devoops.oopslog.comments.command.entity.Comments;
 import com.devoops.oopslog.comments.command.repository.CommentsRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
+@Slf4j
 public class CommentsCommandServiceImpl implements CommentsCommandService {
     private final CommentsRepository commentsRepository;
     private final ModelMapper modelMapper;
@@ -26,7 +28,8 @@ public class CommentsCommandServiceImpl implements CommentsCommandService {
     @Transactional
     public String registOopsComment(CommentCommandDTO newComment, int oopsId, long userId) {
         Comments comments = modelMapper.map(newComment, Comments.class);
-        comments.setId(userId);
+        log.info("comment 내용 추가: {}", comments);
+        comments.setUser_id(userId);
         comments.setCreate_date(LocalDateTime.now());
         comments.setIs_deleted("N");
         comments.setOops_id((long)oopsId);
@@ -39,7 +42,7 @@ public class CommentsCommandServiceImpl implements CommentsCommandService {
     @Transactional
     public String registOohComment(CommentCommandDTO newComment, int oohId, long userId) {
         Comments comments = modelMapper.map(newComment, Comments.class);
-        comments.setId(userId);
+        comments.setUser_id(userId);
         comments.setCreate_date(LocalDateTime.now());
         comments.setIs_deleted("N");
         comments.setOoh_id((long)oohId);
@@ -52,7 +55,7 @@ public class CommentsCommandServiceImpl implements CommentsCommandService {
     @Transactional
     public String registNoticeComment(CommentCommandDTO newComment, int noticeId, long userId) {
         Comments comments = modelMapper.map(newComment, Comments.class);
-        comments.setId(userId);
+        comments.setUser_id(userId);
         comments.setCreate_date(LocalDateTime.now());
         comments.setIs_deleted("N");
         comments.setNotice_id((long)noticeId);

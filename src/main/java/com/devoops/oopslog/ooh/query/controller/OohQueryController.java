@@ -2,14 +2,12 @@ package com.devoops.oopslog.ooh.query.controller;
 
 import com.devoops.oopslog.ooh.query.dto.OohQueryDTO;
 import com.devoops.oopslog.ooh.query.dto.OohQueryScrollResponseDTO;
+import com.devoops.oopslog.ooh.query.dto.OohQuerySelectDTO;
 import com.devoops.oopslog.ooh.query.service.OohQueryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -51,6 +49,13 @@ public class OohQueryController {
         }
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{ooh_id}")
+    public ResponseEntity<OohQuerySelectDTO> selectOohRecordById(@PathVariable Long ooh_id) {
+        OohQuerySelectDTO oohRecord = oohQueryService.selectOohById(ooh_id);
+
+        return ResponseEntity.ok().body(oohRecord);
     }
 
 
