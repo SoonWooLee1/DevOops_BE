@@ -56,8 +56,8 @@ public class CommentsCommandController {
     }
 
     @PostMapping("/notice-insert/{notice_id}")
-    public String writeCommentAtNotice(@RequestBody CommentCommandDTO newComment,
-                                     @PathVariable int notice_id){
+    public String writeCommentAtNotice(@PathVariable int notice_id,
+                                       @RequestBody CommentCommandDTO newComment){
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(!(authentication.getPrincipal() instanceof UserImpl)){
@@ -83,6 +83,13 @@ public class CommentsCommandController {
     @PutMapping("/delete-comment/{comment_id}")
     public String deleteComment(@PathVariable int comment_id){
         String result = commentsCommandService.deleteComment(comment_id);
+
+        return result;
+    }
+
+    @DeleteMapping("/hard-delete-comment/{comment_id}")
+    public String hardDeleteComment(@PathVariable int comment_id){
+        String result = commentsCommandService.hardDeleteComment(comment_id);
 
         return result;
     }

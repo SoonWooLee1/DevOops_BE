@@ -63,7 +63,12 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         Member member = modelMapper.map(signUpDTO, Member.class);
         member.setUser_state('A');
         member.setSign_up_date(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-
+        if(memberCommandRepository.existsByMemberId(member.getMemberId())){
+            throw new RuntimeException("이미 존재하는 회원 아이디 입니다.");
+        }
+        if(memberCommandRepository.existsByEmail(member.getEmail())){
+            throw new RuntimeException("이미 존재하는 이메일 입니다.");
+        }
         member.setMemberPw(bCryptPasswordEncoder.encode(member.getMemberPw()));
 
         memberCommandRepository.saveAndFlush(member);

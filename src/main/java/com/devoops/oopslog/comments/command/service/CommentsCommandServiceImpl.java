@@ -83,4 +83,12 @@ public class CommentsCommandServiceImpl implements CommentsCommandService {
 
         return "comment delete success";
     }
+
+    @Override
+    public String hardDeleteComment(int commentId) {
+        Comments comment = commentsRepository.findById((long)commentId).get();
+        commentsRepository.delete(comment);
+
+        return "comment delete success";
+    }
 }

@@ -42,7 +42,7 @@ public class RecordHistoryCommandServiceImpl implements RecordHistoryCommandServ
             LocalDateTime countDate = date.atStartOfDay();
 
             Optional<RecordHistory> optionalRecord =
-                    recordHistoryRepository.findByUserIdAndCountDate(userId, countDate);
+                    recordHistoryRepository.findByUserIdAndCountDateAndRecordType(userId, countDate, "H");
 
             if (optionalRecord.isPresent()) {
                 RecordHistory record = optionalRecord.get();
@@ -75,7 +75,7 @@ public class RecordHistoryCommandServiceImpl implements RecordHistoryCommandServ
             LocalDateTime countDate = date.atStartOfDay();
 
             Optional<RecordHistory> optionalRecord =
-                    recordHistoryRepository.findByUserIdAndCountDate(userId, countDate);
+                    recordHistoryRepository.findByUserIdAndCountDateAndRecordType(userId, countDate, "P");
 
             if (optionalRecord.isPresent()) {
                 RecordHistory record = optionalRecord.get();

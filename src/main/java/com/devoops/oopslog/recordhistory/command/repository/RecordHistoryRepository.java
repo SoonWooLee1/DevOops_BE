@@ -10,4 +10,5 @@ public interface RecordHistoryRepository extends JpaRepository<RecordHistory, Lo
     // 특정 유저의 특정 날짜 기록 존재하는지 조회 (날짜만 비교)
     Optional<RecordHistory> findByUserIdAndCountDate(Long userId, LocalDateTime countDate);
 
+    Optional<RecordHistory> findByUserIdAndCountDateAndRecordType(long userId, LocalDateTime countDate, String recordType);
 }
