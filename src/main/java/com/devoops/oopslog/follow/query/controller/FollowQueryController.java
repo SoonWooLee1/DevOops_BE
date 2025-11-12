@@ -1,5 +1,6 @@
 package com.devoops.oopslog.follow.query.controller;
 
+import com.devoops.oopslog.follow.query.dto.FollowFeedItemDto;
 import com.devoops.oopslog.follow.query.dto.FollowerResponseDto;
 import com.devoops.oopslog.follow.query.service.FollowQueryService;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/follow")
+//@RequestMapping("/api/follow")
+@RequestMapping("/follow")
 @RequiredArgsConstructor
 public class FollowQueryController {
 
@@ -29,5 +31,13 @@ public class FollowQueryController {
     @GetMapping("/followers/{userId}")
     public ResponseEntity<List<FollowerResponseDto>> getFollowerList(@PathVariable Long userId) {
         return ResponseEntity.ok(followQueryService.getFollowerList(userId));
+    }
+
+    /**
+     * 팔로잉 피드 조회 API 엔드포인트
+     */
+    @GetMapping("/feed/{userId}")
+    public ResponseEntity<List<FollowFeedItemDto>> getMyFollowingFeed(@PathVariable Long userId) {
+        return ResponseEntity.ok(followQueryService.getFollowingFeed(userId));
     }
 }
