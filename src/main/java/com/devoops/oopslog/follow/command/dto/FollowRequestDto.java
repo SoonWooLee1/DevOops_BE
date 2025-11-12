@@ -10,7 +10,7 @@ import lombok.*;
 
 public class FollowRequestDto {
     // 팔로우/언팔로우 주체
-    private Long followerId;
+//    private Long followerId;
 
     // 팔로우/언팔로우 대상
     private Long followeeId;
