@@ -1,9 +1,6 @@
 package com.devoops.oopslog.ooh.query.controller;
 
-import com.devoops.oopslog.ooh.query.dto.OohDetailDTO;
-import com.devoops.oopslog.ooh.query.dto.OohQueryDTO;
-import com.devoops.oopslog.ooh.query.dto.OohQueryScrollResponseDTO;
-import com.devoops.oopslog.ooh.query.dto.OohQuerySelectDTO;
+import com.devoops.oopslog.ooh.query.dto.*;
 import com.devoops.oopslog.ooh.query.service.OohDetailService;
 import com.devoops.oopslog.ooh.query.service.OohQueryService;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +70,14 @@ public class OohQueryController {
         OohDetailDTO dto = oohDetailService.getDetail(oohId, commentLimit /*, me != null ? me.getId() : null*/);
         if (dto == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/{id}/mypage")
+    public ResponseEntity<List<OohMemIdDTO>> getOohDetailByMemId(
+            @PathVariable Long id
+    ) {
+        List<OohMemIdDTO> result = oohQueryService.selectOohRecordByMemId(id);
+        return ResponseEntity.ok(result);
     }
 
 }

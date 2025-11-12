@@ -1,5 +1,6 @@
 package com.devoops.oopslog.oops.query.controller;
 
+import com.devoops.oopslog.oops.query.dto.OopsMemById;
 import com.devoops.oopslog.oops.query.dto.OopsQueryDTO;
 import com.devoops.oopslog.oops.query.dto.OopsQueryScrollResponseDTO;
 import com.devoops.oopslog.oops.query.dto.OopsQuerySelectDTO;
@@ -52,6 +53,12 @@ public class OopsQueryController {
         OopsQuerySelectDTO oopsRecord = oopsQueryService.selectOopsById(oops_id);
 
         return ResponseEntity.ok().body(oopsRecord);
+    }
+
+    @GetMapping("/{id}/mypage")
+    public ResponseEntity<List<OopsMemById>> selectOopsMemById(@PathVariable Long id) {
+        List<OopsMemById> result = oopsQueryService.selectOopsRecordByMemId(id);
+        return ResponseEntity.ok().body(result);
     }
 
 }

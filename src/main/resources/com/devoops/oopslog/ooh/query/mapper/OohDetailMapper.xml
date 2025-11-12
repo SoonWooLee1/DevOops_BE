@@ -3,65 +3,62 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.devoops.oopslog.ooh.query.mapper.OohDetailMapper">
 
-    <!-- 부모 기본정보 -->
     <resultMap id="OohDetailMap" type="com.devoops.oopslog.ooh.query.dto.OohDetailDTO">
-        <id     property="id"         column="ID"/>
-        <result property="type"       column="TYPE"/>
-        <result property="title"      column="TITLE"/>
-        <result property="content"    column="CONTENT"/>
-        <result property="isPrivate"  column="IS_PRIVATE"/>
-        <result property="createDate" column="CREATE_DATE"/>
-        <result property="modifyDate" column="MODIFY_DATE"/>
-        <result property="userId"     column="USER_ID"/>
-        <result property="userName"   column="NAME"/>
-
-        <!-- 컬렉션/단일 값들은 서비스에서 세팅하는 쪽이 안전하지만,
-             필요하면 아래처럼 nested select도 가능 -->
+        <id    property="id"         column="id"/>
+        <result property="isPrivate" column="is_private"/>
+        <result property="title"     column="title"/>
+        <result property="content"   column="content"/>
+        <result property="aiAnswer"  column="ai_answer"/>
+        <result property="createDate" column="create_date"/>
+        <result property="modifyDate" column="modify_date"/>
+        <result property="userId"     column="user_id"/>
+        <result property="userName"   column="user_name"/>   <!-- alias 맞추기 -->
+        <result property="likedByMe"  column="liked_by_me"/>
+        <result property="likesCount" column="likes_count"/>
     </resultMap>
 
     <select id="selectOohBaseById" resultMap="OohDetailMap" parameterType="long">
         SELECT
-            A.ID,
-            'ooh' AS TYPE,
-            A.TITLE,
-            A.CONTENT,
-            A.IS_PRIVATE,
-            A.CREATE_DATE,
-            A.MODIFY_DATE,
-            A.USER_ID,
-            M.NAME
+        A.ID,
+        A.TITLE,
+        A.CONTENT,
+        A.IS_PRIVATE,
+        A.AI_ANSWER,
+        A.CREATE_DATE,
+        A.MODIFY_DATE,
+        A.USER_ID,
+        M.NAME AS user_name        <!-- ✅ alias 추가 -->
         FROM ooh_record A
-                 JOIN member M ON M.ID = A.USER_ID
+        JOIN member M ON M.ID = A.USER_ID
         WHERE A.ID = #{oohId}
-          AND A.IS_DELETED = 'N'
-            LIMIT 1
+        AND A.IS_DELETED = 'N'
+        LIMIT 1
     </select>
 
-    <!-- 태그 3개까지 -->
+    <!-- 일반 태그 3개: 감정이 아닌 것 -->
     <select id="selectTagNamesByOohId" resultType="string" parameterType="long">
         SELECT T.TAG_NAME
         FROM ooh_tag OT
-                 JOIN tag T ON T.ID = OT.TAG_ID
+        JOIN tag T ON T.ID = OT.TAG_ID
         WHERE OT.OOH_ID = #{oohId}
+        AND UPPER(T.TAG_TYPE) NOT IN ('EMOTION', 'EMO')   <!-- ✅ CATEGORY → TAG_TYPE, 대소문자 무시 -->
         ORDER BY T.TAG_NAME
-            LIMIT 3
+        LIMIT 3
     </select>
 
-    <!-- 감정 태그(있으면) 3개까지 -->
+    <!-- 감정 태그 3개 -->
     <select id="selectEmotionNamesByOohId" resultType="string" parameterType="long">
         SELECT T.TAG_NAME
         FROM ooh_tag OT
         JOIN tag T ON T.ID = OT.TAG_ID
         WHERE OT.OOH_ID = #{oohId}
-        AND T.TAG_TYPE = 'EMOTION'   <!-- 태그 타입 컬럼이 있다면, 실제 스키마에 맞춰 수정 -->
+        AND UPPER(T.TAG_TYPE) IN ('EMOTION', 'EMO')       <!-- ✅ CATEGORY → TAG_TYPE, 대소문자 무시 -->
         ORDER BY T.TAG_NAME
         LIMIT 3
     </select>
 
-    <!-- 좋아요 카운트 -->
     <select id="selectLikesCountByOohId" resultType="long" parameterType="long">
-        SELECT COUNT(*) FROM likes
-        WHERE ooh_id = #{oohId}
+        SELECT COUNT(*) FROM likes WHERE ooh_id = #{oohId}
     </select>
 
     <!-- 댓글 상위 N개 -->

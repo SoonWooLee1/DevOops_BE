@@ -1,11 +1,13 @@
-// com.devoops.oopslog.ooh.query.dto.OohDetailDTO
 package com.devoops.oopslog.ooh.query.dto;
 
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class OohDetailDTO {
 
     private Long id;
@@ -13,6 +15,7 @@ public class OohDetailDTO {
     private String title;
     private String content;
     private String isPrivate;
+    private String aiAnswer;
     private LocalDateTime createDate;
     private LocalDateTime modifyDate;
 
