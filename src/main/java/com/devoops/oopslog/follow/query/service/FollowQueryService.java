@@ -34,7 +34,7 @@ public class FollowQueryService {
     }
 
     /**
-     * [!] 2. 팔로잉 피드 조회 서비스 메서드 추가
+     * 팔로잉 피드 조회 서비스 메서드
      */
     @Transactional(readOnly = true)
     public List<FollowFeedItemDto> getFollowingFeed(Long userId) {

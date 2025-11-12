@@ -1,10 +1,13 @@
 package com.devoops.oopslog.follow.command.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@ToString
+
 public class FollowRequestDto {
     // 팔로우/언팔로우 주체
     private Long followerId;

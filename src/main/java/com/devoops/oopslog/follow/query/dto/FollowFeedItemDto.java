@@ -1,14 +1,15 @@
 package com.devoops.oopslog.follow.query.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
-/**
- * 팔로잉 피드 아이템 DTO
- */
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@ToString
+
 public class FollowFeedItemDto {
     private String recordType;     // "ooh" 또는 "oops"
     private Long recordId;         // Ooh/Oops 원본 글의 PK
