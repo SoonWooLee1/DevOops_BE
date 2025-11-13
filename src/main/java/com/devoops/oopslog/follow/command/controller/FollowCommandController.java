@@ -11,15 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/api/follow")
+@RequestMapping("/follow")
 @RequiredArgsConstructor
 public class FollowCommandController {
 
     private final FollowCommandService followCommandService;
 
-    /**
-     * 다른 유저 팔로우 (Create)
-     */
     @PostMapping
     public ResponseEntity<String> follow(
             @AuthenticationPrincipal UserImpl user,
@@ -35,9 +32,6 @@ public class FollowCommandController {
         }
     }
 
-    /**
-     * 팔로우 취소 (Delete)
-     */
     @DeleteMapping
     public ResponseEntity<String> unfollow(
             @AuthenticationPrincipal UserImpl user,

@@ -11,20 +11,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/api/bookmarks")
+@RequestMapping("/bookmarks") // [수정] /api 제거
 @RequiredArgsConstructor
 public class BookmarkCommandController {
 
     private final BookmarkCommandService bookmarkCommandService;
 
-    /**
-     * Ooh/Oops 게시글 북마크 추가 (Create)
-     */
     @PostMapping
-    public ResponseEntity<String> addBookmark(@AuthenticationPrincipal UserImpl user,
-                                              @RequestBody BookmarkRequestDto request) {
+    public ResponseEntity<String> addBookmark(
+            @AuthenticationPrincipal UserImpl user,
+            @RequestBody BookmarkRequestDto request) {
         try {
-            Long userId = user.getId();
+            Long userId = user.getId(); // (user.getId()가 맞습니다)
             bookmarkCommandService.addBookmark(userId, request);
             return ResponseEntity.ok("북마크 추가를 성공했습니다.");
         } catch (NoSuchElementException e) {
@@ -34,14 +32,12 @@ public class BookmarkCommandController {
         }
     }
 
-    /**
-     * 북마크 삭제 (Delete)
-     */
     @DeleteMapping
-    public ResponseEntity<String> removeBookmark(@AuthenticationPrincipal UserImpl user,
-                                                 @RequestBody BookmarkRequestDto request) {
+    public ResponseEntity<String> removeBookmark(
+            @AuthenticationPrincipal UserImpl user,
+            @RequestBody BookmarkRequestDto request) {
         try {
-            Long userId = user.getId();
+            Long userId = user.getId(); // (user.getId()가 맞습니다)
             bookmarkCommandService.removeBookmark(userId, request);
             return ResponseEntity.ok("북마크 삭제를 성공했습니다.");
         } catch (NoSuchElementException e) {

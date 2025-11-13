@@ -12,39 +12,32 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/follow")
-//@RequestMapping("/follow")
+@RequestMapping("/follow")
 @RequiredArgsConstructor
 public class FollowQueryController {
 
     private final FollowQueryService followQueryService;
 
-    /**
-     * 특정 유저의 팔로잉 목록 조회 (Read)
-     */
-    @GetMapping("/following/my")
+    @GetMapping("/following/my")    // 특정 유저의 팔로우 목록
     public ResponseEntity<List<FollowerResponseDto>> getFollowingList(
-            @AuthenticationPrincipal UserImpl user) {
+            @AuthenticationPrincipal UserImpl user
+    ) {
         Long userId = user.getId();
         return ResponseEntity.ok(followQueryService.getFollowingList(userId));
     }
 
-    /**
-     * 특정 유저의 팔로워 목록 조회 (Read)
-     */
-    @GetMapping("/followers/my")
+    @GetMapping("/followers/my")    // 특정 유저의 팔로잉 목록
     public ResponseEntity<List<FollowerResponseDto>> getFollowerList(
-            @AuthenticationPrincipal UserImpl user) {
+            @AuthenticationPrincipal UserImpl user
+    ) {
         Long userId = user.getId();
         return ResponseEntity.ok(followQueryService.getFollowerList(userId));
     }
 
-    /**
-     * 팔로잉 피드 조회 API 엔드포인트
-     */
-    @GetMapping("/feed/my")
+    @GetMapping("/feed/my")         // 팔로잉 피드 조회 API 엔드포인트
     public ResponseEntity<List<FollowFeedItemDto>> getMyFollowingFeed(
-            @AuthenticationPrincipal UserImpl user) {
+            @AuthenticationPrincipal UserImpl user
+    ) {
         Long userId = user.getId();
         return ResponseEntity.ok(followQueryService.getFollowingFeed(userId));
     }
