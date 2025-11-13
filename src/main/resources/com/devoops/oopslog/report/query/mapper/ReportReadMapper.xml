@@ -27,4 +27,7 @@
         ON r.comment_id IS NOT NULL AND r.comment_id = c.id
         WHERE r.id = #{reportId}
     </select>
+    <select id="selectReportCategory" resultType="com.devoops.oopslog.report.query.dto.AllReportCategoryDTO">
+        SELECT * FROM report_category
+    </select>
 </mapper>
