@@ -59,8 +59,6 @@ public class OohQueryController {
         return ResponseEntity.ok().body(oohRecord);
     }
 
-
-
     @GetMapping("/{oohId}/detail")
     public ResponseEntity<OohDetailDTO> getDetail(
             @PathVariable Long oohId,
